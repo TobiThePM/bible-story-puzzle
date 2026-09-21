@@ -131,10 +131,12 @@ on purpose.
 - [ ] **Proofread every verse against a printed Bible.** Quotations are King
       James Version (public domain) and were written from memory — they must be
       checked before this goes in front of a class.
-- [ ] Replace the 20 placeholder illustrations with real artwork
-      (1200x1200, WebP). Art direction and the confusable-tile test are in
-      [SPEC.md](SPEC.md) §12.
-- [ ] Update `image` / `thumb` paths in `src/content/stories.ts` to the new files.
+- [x] ~~Replace the placeholder illustrations with real artwork.~~ Done — twenty
+      Canva-generated paintings, 2.1 MB for the set.
+- [ ] Improve the images that still fail the confusable-tile check. Run
+      `node scripts/process-art.mjs` to see which. Currently **20/20 pass at
+      3×3, 15/20 at 4×4, 8/20 at 5×5** — so Little Ones is clean, Standard has
+      a few weak later rounds, and Master's 5×5 rounds need work.
 - [ ] Playtest with real children and tune `src/content/modes.ts`.
 - [ ] Add the live URL to the top of this file.
 
