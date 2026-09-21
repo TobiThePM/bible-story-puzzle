@@ -1,0 +1,14 @@
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+.DS_Store
+Thumbs.db
+.env*.local
+.vercel
+
+# Full-resolution source art. Keep locally / in cloud backup, ship only the
+# optimised files committed under public/stories/.
+assets-source/
