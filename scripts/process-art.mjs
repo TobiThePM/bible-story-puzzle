@@ -79,10 +79,11 @@ async function processOne(file) {
   const name = path.parse(file).name;
   const src = path.join(SOURCE_DIR, file);
 
+  // Non-square sources are centre-cropped by `fit: 'cover'` below, never
+  // squashed. Canva exports 16:9, so this is the normal path - prompt for the
+  // subject to sit in the central square and the crop takes care of itself.
   const meta = await sharp(src).metadata();
-  if (meta.width !== meta.height) {
-    console.log(`  ! ${name}: source is ${meta.width}x${meta.height}, not square - it will be squashed. Regenerate at 1:1.`);
-  }
+  const cropped = meta.width !== meta.height;
 
   const full = await sharp(src).resize(FULL, FULL, { fit: 'cover' }).webp({ quality: 82 }).toBuffer();
   fs.writeFileSync(path.join(OUT_DIR, `${name}.webp`), full);
@@ -99,7 +100,9 @@ async function processOne(file) {
   const failed = results.some((r) => r.failures.length > 0);
   const tightest = results.reduce((a, b) => (a.worst.distance < b.worst.distance ? a : b));
 
-  console.log(`\n  ${name}.webp  ${kb} KB  (+ thumb ${thumbKb} KB)`);
+  console.log(
+    `\n  ${name}.webp  ${kb} KB  (+ thumb ${thumbKb} KB)${cropped ? `  [centre-cropped from ${meta.width}x${meta.height}]` : ''}`
+  );
   for (const r of results) {
     const d = r.worst.distance.toFixed(1);
     const mark = r.failures.length ? 'FAIL' : r.worst.distance < COMFORTABLE ? 'tight' : 'ok';
