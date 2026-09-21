@@ -2,7 +2,8 @@
 
 **Discover Scripture through some of the Bible's greatest stories.**
 
-Twenty timed picture puzzles, played in biblical order from Genesis to Jeremiah.
+Timed picture puzzles - play 5, 10 or 20 - drawn from twenty Bible stories and
+always presented in biblical order.
 Solve the picture, read the story, move on. Built for Sunday schools, classrooms,
 families and youth groups.
 
@@ -23,7 +24,7 @@ Open <http://localhost:3000>.
 | Command | What it does |
 |---|---|
 | `npm run dev` | Development server with hot reload |
-| `npm test` | Unit tests (35) for puzzle logic, scoring and the content contract |
+| `npm test` | Unit tests (52) for puzzle logic, scoring, story selection and the content contract |
 | `npm run build` | Static export into `out/` |
 | `npm run placeholders` | Regenerates the 20 placeholder illustrations |
 | `node scripts/process-art.mjs` | Optimises source art and runs the confusable-tile check |
@@ -103,11 +104,11 @@ src/
   app/            home, /play, /library, global stylesheet
   components/     PuzzleBoard, TimerRing, StoryCard, RoundIntro, Results, GameHost
   content/        stories.ts (the 20 stories)  ·  modes.ts (difficulty)
-  game/           logic.ts, scoring.ts, rng.ts, store.ts, useTimer.ts, storage.ts
+  game/           logic.ts, scoring.ts, selection.ts, rng.ts, store.ts, useTimer.ts, storage.ts
   types/
 public/stories/   20 illustrations
-tests/            logic, scoring, content-contract
-scripts/          placeholder art generator
+tests/            logic, scoring, selection, content-contract
+scripts/          art pipeline + prompts + placeholder generator
 ```
 
 `src/game/*.ts` (except the store and hooks) is pure and React-free, so it is
@@ -141,7 +142,8 @@ on purpose.
 
 ## Roadmap
 
-**v1 (this):** single player, four difficulty levels, 20 stories, local scores.
+**v1 (this):** single player, four difficulty levels, three session lengths
+(5 / 10 / 20 puzzles), 20 stories, local scores.
 
 **Phase 2 — multiplayer.** The groundwork is already here: boards are generated
 from a seed, so every player in a room can be handed an identical puzzle, and all
