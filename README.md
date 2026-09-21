@@ -7,7 +7,7 @@ always presented in biblical order.
 Solve the picture, read the story, move on. Built for Sunday schools, classrooms,
 families and youth groups.
 
-- **Live site:** _(add the URL once deployed)_
+- **Live site:** <https://bible-story-puzzle.vercel.app>
 - **Spec:** [SPEC.md](SPEC.md) · **Deployment guide:** [BUILD-AND-DEPLOY.md](BUILD-AND-DEPLOY.md)
 
 ---
@@ -138,7 +138,7 @@ on purpose.
       3×3, 15/20 at 4×4, 8/20 at 5×5** — so Little Ones is clean, Standard has
       a few weak later rounds, and Master's 5×5 rounds need work.
 - [ ] Playtest with real children and tune `src/content/modes.ts`.
-- [ ] Add the live URL to the top of this file.
+- [x] ~~Add the live URL to the top of this file.~~ Done.
 
 ---
 
