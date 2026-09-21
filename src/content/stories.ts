@@ -22,8 +22,8 @@ export const STORIES: Story[] = [
       'In the beginning the earth was dark and empty, and the Spirit of God moved over the water. Then God spoke, and light poured into the world for the very first time.',
     verse: 'And God said, Let there be light: and there was light.',
     verseReference: 'Genesis 1:3',
-    image: '/stories/01-creation.svg',
-    thumb: '/stories/01-creation.svg',
+    image: '/stories/01-creation.webp',
+    thumb: '/stories/01-creation-thumb.webp',
     alt: 'Light breaking in a great arc across a dark sea, the sky splitting open above.',
   },
   {
