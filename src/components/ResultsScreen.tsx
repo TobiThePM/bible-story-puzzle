@@ -8,25 +8,35 @@ import { goldStarCount, rankFor, totalScore } from '@/game/scoring';
 interface Props {
   results: RoundResult[];
   mode: GameMode;
+  totalRounds: number;
   newBest: boolean;
   onPlayAgain: () => void;
   onHome: () => void;
 }
 
-export default function ResultsScreen({ results, mode, newBest, onPlayAgain, onHome }: Props) {
+export default function ResultsScreen({
+  results,
+  mode,
+  totalRounds,
+  newBest,
+  onPlayAgain,
+  onHome,
+}: Props) {
   const score = totalScore(results);
   const stars = goldStarCount(results);
-  const rank = rankFor(score);
+  const rank = rankFor(score, totalRounds);
   const solved = results.filter((r) => r.solved).length;
 
   const share = () => {
-    const text = `Bible Story Puzzle - ${mode.label}\n${score} points, ${rank.name}\n${solved}/20 solved, ${stars} gold stars`;
+    const text = `Bible Story Puzzle - ${mode.label}, ${totalRounds} puzzles\n${score} points, ${rank.name}\n${solved}/${totalRounds} solved, ${stars} gold stars`;
     navigator.clipboard?.writeText(text).catch(() => {});
   };
 
   return (
     <div className="results">
-      <p className="hud__label">{mode.label} &middot; final score</p>
+      <p className="hud__label">
+        {mode.label} &middot; {totalRounds} puzzles &middot; final score
+      </p>
       <div className="results__score">{score.toLocaleString()}</div>
       <h2 className="results__rank">{rank.name}</h2>
       <p className="results__blurb">{rank.blurb}</p>
@@ -34,7 +44,8 @@ export default function ResultsScreen({ results, mode, newBest, onPlayAgain, onH
       {newBest && <p className="results__best">New personal best</p>}
 
       <p className="results__stars">
-        {solved} of 20 solved &middot; {stars} gold {stars === 1 ? 'star' : 'stars'}
+        {solved} of {totalRounds} solved &middot; {stars} gold{' '}
+        {stars === 1 ? 'star' : 'stars'}
       </p>
 
       <div className="play__actions">
@@ -70,7 +81,9 @@ export default function ResultsScreen({ results, mode, newBest, onPlayAgain, onH
                 </div>
                 <div className="row__ref">
                   {story.reference} &middot;{' '}
-                  {r.solved ? `solved in ${Math.round(r.secondsUsed)}s` : `${r.correctTiles}/${r.totalTiles} placed`}
+                  {r.solved
+                    ? `solved in ${Math.round(r.secondsUsed)}s`
+                    : `${r.correctTiles}/${r.totalTiles} placed`}
                 </div>
               </div>
               <div className="row__score">{r.score}</div>

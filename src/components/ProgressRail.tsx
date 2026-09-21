@@ -1,18 +1,19 @@
 'use client';
 
 import type { RoundResult } from '@/types';
-import { TOTAL_ROUNDS } from '@/content/stories';
 
 export default function ProgressRail({
   results,
   current,
+  total,
 }: {
   results: RoundResult[];
   current: number;
+  total: number;
 }) {
   return (
-    <div className="rail" aria-label={`Round ${current + 1} of ${TOTAL_ROUNDS}`}>
-      {Array.from({ length: TOTAL_ROUNDS }, (_, i) => {
+    <div className="rail" aria-label={`Round ${current + 1} of ${total}`}>
+      {Array.from({ length: total }, (_, i) => {
         const r = results[i];
         const cls = [
           'rail__dot',

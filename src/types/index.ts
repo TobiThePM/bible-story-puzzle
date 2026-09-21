@@ -23,19 +23,34 @@ export interface Story {
 
 export type ModeId = 'little-ones' | 'standard' | 'champion' | 'master';
 
+/** How many puzzles in one sitting. */
+export type SessionLength = 5 | 10 | 20;
+
 export interface GameMode {
   id: ModeId;
   label: string;
   tagline: string;
   description: string;
-  /** Grid size for a given round index (0-19). */
-  gridFor: (roundIndex: number) => GridSize;
-  /** Seconds allowed for a given round index and grid size. */
-  secondsFor: (roundIndex: number, grid: GridSize) => number;
+  /**
+   * Grid size at a point in the session.
+   *
+   * `progress` is 0 on the first round and 1 on the last, whatever the session
+   * length. Ramping on progress rather than on the absolute round number means
+   * a 5-puzzle game still climbs from easy to hard instead of staying on the
+   * opening difficulty the whole way.
+   */
+  gridFor: (progress: number) => GridSize;
+  /** Seconds allowed at a point in the session, for the grid in play. */
+  secondsFor: (progress: number, grid: GridSize) => number;
   peekEnabled: boolean;
   peekPenalty: number;
   peekSeconds: number;
   storyCardSeconds: number;
+}
+
+/** 0 on the first round, 1 on the last, for any session length. */
+export function roundProgress(roundIndex: number, totalRounds: number): number {
+  return totalRounds <= 1 ? 0 : roundIndex / (totalRounds - 1);
 }
 
 export interface RoundResult {

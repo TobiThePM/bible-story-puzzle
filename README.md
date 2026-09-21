@@ -26,6 +26,7 @@ Open <http://localhost:3000>.
 | `npm test` | Unit tests (35) for puzzle logic, scoring and the content contract |
 | `npm run build` | Static export into `out/` |
 | `npm run placeholders` | Regenerates the 20 placeholder illustrations |
+| `node scripts/process-art.mjs` | Optimises source art and runs the confusable-tile check |
 
 ---
 
@@ -55,6 +56,34 @@ Adding a 21st story is one entry plus one image file.
 After playtesting with real children, tune that file and nothing else.
 
 ---
+
+## Session length
+
+Twenty puzzles is a ~20 minute commitment - right for a Sunday school slot, too
+long for "one more go". Three lengths are offered:
+
+| Option | Puzzles | Roughly |
+|---|---|---|
+| **Quick** | 5 | 5 min |
+| **Half** | 10 | 10 min |
+| **Full** | 20 | 20 min, Genesis to Jeremiah |
+
+A short game picks its stories **at random, then sorts them back into canonical
+order** - so it is a different set every time, but still travels forwards
+through the Bible rather than jumping about. Selection is seeded, so Phase 2
+multiplayer can deal every player in a room the identical set.
+
+Two things scale with length automatically:
+
+- **Difficulty ramps on progress through the session, not on round number.** A
+  five-puzzle Standard game still climbs 3x3 -> 4x4; it does not sit on the
+  opening grid because the switch happened at round 6.
+- **Ranks judge the average score per round, not the total.** A strong
+  five-puzzle game can reach Faithful Witness. Under total-based thresholds it
+  was capped at Student forever.
+
+Best scores are stored per mode AND per length, so a 20-round total cannot
+permanently outrank every 5-round game.
 
 ## Difficulty levels
 

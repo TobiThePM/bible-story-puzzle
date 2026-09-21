@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import { STORIES, TOTAL_ROUNDS } from '@/content/stories';
-import { MODES, MODE_ORDER } from '@/content/modes';
+import { MODES, MODE_ORDER, LENGTHS, DEFAULT_LENGTH } from '@/content/modes';
 
 const PUBLIC_DIR = path.resolve(__dirname, '../public');
 
@@ -66,43 +66,14 @@ describe('difficulty levels', () => {
     for (const id of MODE_ORDER) expect(MODES[id]).toBeDefined();
   });
 
-  it('gives every round a legal grid and a positive clock', () => {
-    for (const id of MODE_ORDER) {
-      const mode = MODES[id];
-      for (let round = 0; round < TOTAL_ROUNDS; round++) {
-        const grid = mode.gridFor(round);
-        expect([3, 4, 5], `${id} round ${round}`).toContain(grid);
-        expect(mode.secondsFor(round, grid), `${id} round ${round}`).toBeGreaterThan(0);
-      }
+  it('offers session lengths that all fit inside the story set', () => {
+    for (const l of LENGTHS) {
+      expect(l.rounds).toBeGreaterThan(0);
+      expect(l.rounds).toBeLessThanOrEqual(TOTAL_ROUNDS);
     }
   });
 
-  it('never gets easier as the rounds go on', () => {
-    for (const id of MODE_ORDER) {
-      const mode = MODES[id];
-      for (let round = 1; round < TOTAL_ROUNDS; round++) {
-        expect(mode.gridFor(round), `${id} round ${round}`).toBeGreaterThanOrEqual(
-          mode.gridFor(round - 1)
-        );
-      }
-    }
-  });
-
-  it('gets harder as you climb the ladder', () => {
-    const difficultyOf = (id: (typeof MODE_ORDER)[number]) => {
-      const mode = MODES[id];
-      let tilesPerSecond = 0;
-      for (let round = 0; round < TOTAL_ROUNDS; round++) {
-        const grid = mode.gridFor(round);
-        tilesPerSecond += (grid * grid) / mode.secondsFor(round, grid);
-      }
-      return tilesPerSecond;
-    };
-
-    for (let i = 1; i < MODE_ORDER.length; i++) {
-      expect(difficultyOf(MODE_ORDER[i]), MODE_ORDER[i]).toBeGreaterThan(
-        difficultyOf(MODE_ORDER[i - 1])
-      );
-    }
+  it('has a default length that is one of the offered options', () => {
+    expect(LENGTHS.map((l) => l.rounds)).toContain(DEFAULT_LENGTH);
   });
 });

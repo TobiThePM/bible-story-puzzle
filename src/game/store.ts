@@ -1,13 +1,22 @@
 'use client';
 
 import { create } from 'zustand';
-import type { GameMode, GridSize, ModeId, Phase, RoundResult, Story } from '@/types';
-import { STORIES, TOTAL_ROUNDS } from '@/content/stories';
-import { MODES, DEFAULT_MODE } from '@/content/modes';
+import type {
+  GameMode,
+  GridSize,
+  ModeId,
+  Phase,
+  RoundResult,
+  SessionLength,
+  Story,
+} from '@/types';
+import { roundProgress } from '@/types';
+import { MODES, DEFAULT_MODE, DEFAULT_LENGTH } from '@/content/modes';
 import { boardSeed, correctCount, isSolved, shuffle, swap } from './logic';
+import { pickStories } from './selection';
 import { scoreRound, totalScore, goldStarCount } from './scoring';
 import { makeSessionSeed } from './rng';
-import { recordRun, setLastMode } from './storage';
+import { recordRun, setLastMode, setLastLength } from './storage';
 
 /** How long the finished picture is held before the story card appears. */
 export const SOLVE_CELEBRATION_MS = 900;
@@ -15,6 +24,8 @@ export const SOLVE_CELEBRATION_MS = 900;
 export interface GameState {
   phase: Phase;
   mode: GameMode;
+  /** The stories this session plays, already in canonical order. */
+  stories: Story[];
   roundIndex: number;
   tiles: number[];
   grid: GridSize;
@@ -27,7 +38,7 @@ export interface GameState {
   sessionSeed: string;
   newBest: boolean;
 
-  startGame: (modeId: ModeId) => void;
+  startGame: (modeId: ModeId, length: number) => void;
   beginRound: () => void;
   swapTiles: (a: number, b: number) => void;
   tick: (secondsElapsed: number) => void;
@@ -42,6 +53,7 @@ export interface GameState {
 const initial = {
   phase: 'idle' as Phase,
   mode: MODES[DEFAULT_MODE],
+  stories: [] as Story[],
   roundIndex: 0,
   tiles: [] as number[],
   grid: 3 as GridSize,
@@ -55,15 +67,16 @@ const initial = {
   newBest: false,
 };
 
-/** Build a fresh board for a round. Pure apart from reading the mode config. */
-function setupRound(mode: GameMode, roundIndex: number, sessionSeed: string) {
-  const story = STORIES[roundIndex];
-  const grid = mode.gridFor(roundIndex);
+/** Build a fresh board for a round. */
+function setupRound(mode: GameMode, stories: Story[], roundIndex: number, sessionSeed: string) {
+  const story = stories[roundIndex];
+  const progress = roundProgress(roundIndex, stories.length);
+  const grid = mode.gridFor(progress);
   return {
     roundIndex,
     grid,
     tiles: shuffle(grid, boardSeed(story.id, sessionSeed, grid)),
-    secondsLimit: mode.secondsFor(roundIndex, grid),
+    secondsLimit: mode.secondsFor(progress, grid),
     secondsUsed: 0,
     peeksUsed: 0,
     peeking: false,
@@ -74,17 +87,22 @@ function setupRound(mode: GameMode, roundIndex: number, sessionSeed: string) {
 export const useGame = create<GameState>((set, get) => ({
   ...initial,
 
-  startGame: (modeId) => {
+  startGame: (modeId, length) => {
     const mode = MODES[modeId] ?? MODES[DEFAULT_MODE];
     const sessionSeed = makeSessionSeed();
+    const stories = pickStories(length ?? DEFAULT_LENGTH, sessionSeed);
+
     setLastMode(mode.id);
+    setLastLength(stories.length);
+
     set({
       ...initial,
       mode,
+      stories,
       sessionSeed,
       results: [],
       phase: 'briefing',
-      ...setupRound(mode, 0, sessionSeed),
+      ...setupRound(mode, stories, 0, sessionSeed),
     });
   },
 
@@ -99,7 +117,6 @@ export const useGame = create<GameState>((set, get) => ({
     const tiles = swap(s.tiles, a, b);
 
     if (isSolved(tiles)) {
-      // Hold the completed picture for a beat before the story card.
       set({ tiles, phase: 'solved', peeking: false });
       setTimeout(() => {
         if (get().phase === 'solved') get().finishRound(true);
@@ -132,12 +149,11 @@ export const useGame = create<GameState>((set, get) => ({
 
   toggleStoryCardPause: () => set((s) => ({ storyCardPaused: !s.storyCardPaused })),
 
-  /** Score the round and show the story card. Shared by solve and timeout. */
   finishRound: (solved) => {
     const s = get();
     if (s.phase !== 'solved' && s.phase !== 'timedOut') return;
 
-    const story = STORIES[s.roundIndex];
+    const story = s.stories[s.roundIndex];
     const result = scoreRound({
       storyId: story.id,
       roundIndex: s.roundIndex,
@@ -165,14 +181,17 @@ export const useGame = create<GameState>((set, get) => ({
 
     const next = s.roundIndex + 1;
 
-    if (next >= TOTAL_ROUNDS) {
+    if (next >= s.stories.length) {
       const score = totalScore(s.results);
       const stars = goldStarCount(s.results);
-      set({ phase: 'results', newBest: recordRun(s.mode.id, score, stars) });
+      set({
+        phase: 'results',
+        newBest: recordRun(s.mode.id, s.stories.length, score, stars),
+      });
       return;
     }
 
-    set({ phase: 'briefing', ...setupRound(s.mode, next, s.sessionSeed) });
+    set({ phase: 'briefing', ...setupRound(s.mode, s.stories, next, s.sessionSeed) });
   },
 
   quit: () => set({ ...initial }),
@@ -180,8 +199,12 @@ export const useGame = create<GameState>((set, get) => ({
 
 // ---- selectors -------------------------------------------------------------
 
-export function currentStory(s: GameState): Story {
-  return STORIES[Math.min(s.roundIndex, TOTAL_ROUNDS - 1)];
+export function currentStory(s: GameState): Story | undefined {
+  return s.stories[Math.min(s.roundIndex, s.stories.length - 1)];
+}
+
+export function totalRounds(s: GameState): number {
+  return s.stories.length;
 }
 
 export function runningScore(s: GameState): number {

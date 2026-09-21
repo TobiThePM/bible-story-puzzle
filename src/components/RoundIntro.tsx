@@ -2,12 +2,12 @@
 
 import { useEffect } from 'react';
 import type { GridSize, RoundResult, Story } from '@/types';
-import { TOTAL_ROUNDS } from '@/content/stories';
 import ProgressRail from './ProgressRail';
 
 interface Props {
   story: Story;
   roundIndex: number;
+  totalRounds: number;
   grid: GridSize;
   seconds: number;
   results: RoundResult[];
@@ -22,6 +22,7 @@ const BRIEFING_MS = 2600;
 export default function RoundIntro({
   story,
   roundIndex,
+  totalRounds,
   grid,
   seconds,
   results,
@@ -41,16 +42,16 @@ export default function RoundIntro({
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') onBegin();
       }}
-      aria-label={`Round ${roundIndex + 1} of ${TOTAL_ROUNDS}, ${story.title}. Tap to start.`}
+      aria-label={`Round ${roundIndex + 1} of ${totalRounds}, ${story.title}. Tap to start.`}
     >
       <p className="briefing__round">
-        Round {roundIndex + 1} of {TOTAL_ROUNDS}
+        Round {roundIndex + 1} of {totalRounds}
       </p>
       <h2 className="briefing__title">{story.title}</h2>
       <p className="briefing__grid">
         {grid} &times; {grid} &middot; {seconds} seconds
       </p>
-      <ProgressRail results={results} current={roundIndex} />
+      <ProgressRail results={results} current={roundIndex} total={totalRounds} />
     </div>
   );
 }

@@ -3,35 +3,50 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { MODES, MODE_ORDER, DEFAULT_MODE } from '@/content/modes';
-import { TOTAL_ROUNDS } from '@/content/stories';
+import {
+  MODES,
+  MODE_ORDER,
+  DEFAULT_MODE,
+  LENGTHS,
+  DEFAULT_LENGTH,
+  isSessionLength,
+} from '@/content/modes';
 import { useGame } from '@/game/store';
-import { getBest, getLastMode } from '@/game/storage';
-import type { ModeId } from '@/types';
+import { getBest, getLastMode, getLastLength } from '@/game/storage';
+import type { ModeId, SessionLength } from '@/types';
 
 export default function Home() {
   const router = useRouter();
   const startGame = useGame((s) => s.startGame);
 
-  const [selected, setSelected] = useState<ModeId>(DEFAULT_MODE);
+  const [mode, setMode] = useState<ModeId>(DEFAULT_MODE);
+  const [length, setLength] = useState<SessionLength>(DEFAULT_LENGTH);
   const [bests, setBests] = useState<Record<string, number>>({});
 
   // localStorage is read after mount so the static HTML stays identical for
   // every visitor (no hydration mismatch).
   useEffect(() => {
-    setSelected(getLastMode() ?? DEFAULT_MODE);
+    const savedMode = getLastMode() ?? DEFAULT_MODE;
+    const savedLength = getLastLength();
+    setMode(savedMode);
+    if (savedLength !== null && isSessionLength(savedLength)) setLength(savedLength);
+
     const found: Record<string, number> = {};
     for (const id of MODE_ORDER) {
-      const best = getBest(id);
-      if (best) found[id] = best.score;
+      for (const l of LENGTHS) {
+        const best = getBest(id, l.rounds);
+        if (best) found[`${id}.${l.rounds}`] = best.score;
+      }
     }
     setBests(found);
   }, []);
 
   const play = () => {
-    startGame(selected);
+    startGame(mode, length);
     router.push('/play/');
   };
+
+  const best = bests[`${mode}.${length}`];
 
   return (
     <main className="page">
@@ -41,17 +56,34 @@ export default function Home() {
           Discover Scripture through some of the Bible&rsquo;s greatest stories.
         </p>
 
+        <h2 className="picker__heading">How many puzzles?</h2>
+        <div className="lengths" role="group" aria-label="Choose how many puzzles to play">
+          {LENGTHS.map((l) => (
+            <button
+              key={l.rounds}
+              type="button"
+              className="length"
+              aria-pressed={length === l.rounds}
+              onClick={() => setLength(l.rounds)}
+            >
+              <span className="length__n">{l.rounds}</span>
+              <span className="length__label">{l.label}</span>
+              <span className="length__mins">{l.minutes}</span>
+            </button>
+          ))}
+        </div>
+
+        <h2 className="picker__heading">How hard?</h2>
         <div className="modes" role="group" aria-label="Choose a difficulty level">
           {MODE_ORDER.map((id, i) => {
-            const mode = MODES[id];
-            const isOn = selected === id;
+            const m = MODES[id];
             return (
               <button
                 key={id}
                 type="button"
                 className="mode"
-                aria-pressed={isOn}
-                onClick={() => setSelected(id)}
+                aria-pressed={mode === id}
+                onClick={() => setMode(id)}
               >
                 <span className="mode__pips" aria-hidden="true">
                   {MODE_ORDER.map((_, p) => (
@@ -60,13 +92,10 @@ export default function Home() {
                 </span>
                 <span className="mode__text">
                   <span className="mode__name">
-                    {mode.label}
-                    <span className="mode__tag">{mode.tagline}</span>
+                    {m.label}
+                    <span className="mode__tag">{m.tagline}</span>
                   </span>
-                  <span className="mode__desc">{mode.description}</span>
-                  {bests[id] !== undefined && (
-                    <span className="mode__best">Best: {bests[id].toLocaleString()}</span>
-                  )}
+                  <span className="mode__desc">{m.description}</span>
                 </span>
               </button>
             );
@@ -75,8 +104,13 @@ export default function Home() {
 
         <div className="home__cta">
           <button type="button" className="btn btn--primary" onClick={play}>
-            Play {TOTAL_ROUNDS} stories
+            Play {length} puzzles
           </button>
+          {best !== undefined && (
+            <p className="home__best">
+              Your best at {MODES[mode].label} &middot; {length}: {best.toLocaleString()}
+            </p>
+          )}
         </div>
 
         <div className="home__foot">

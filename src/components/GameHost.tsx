@@ -2,9 +2,8 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useGame, currentStory, runningScore, lastResult } from '@/game/store';
+import { useGame, currentStory, runningScore, lastResult, totalRounds } from '@/game/store';
 import { useTimer } from '@/game/useTimer';
-import { STORIES, TOTAL_ROUNDS } from '@/content/stories';
 import PuzzleBoard from './PuzzleBoard';
 import TimerRing from './TimerRing';
 import StoryCard from './StoryCard';
@@ -17,6 +16,7 @@ export default function GameHost() {
   const s = useGame();
 
   const story = currentStory(s);
+  const rounds = totalRounds(s);
   const score = runningScore(s);
   const result = lastResult(s);
 
@@ -27,12 +27,12 @@ export default function GameHost() {
   // puzzle never waits on a download.
   useEffect(() => {
     if (s.phase !== 'storyCard') return;
-    const next = STORIES[s.roundIndex + 1];
+    const next = s.stories[s.roundIndex + 1];
     if (next) {
       const img = new Image();
       img.src = next.image;
     }
-  }, [s.phase, s.roundIndex]);
+  }, [s.phase, s.roundIndex, s.stories]);
 
   // Peek auto-closes.
   useEffect(() => {
@@ -46,15 +46,16 @@ export default function GameHost() {
     if (s.phase === 'idle') router.replace('/');
   }, [s.phase, router]);
 
-  if (s.phase === 'idle') return null;
+  if (s.phase === 'idle' || !story) return null;
 
   if (s.phase === 'results') {
     return (
       <ResultsScreen
         results={s.results}
         mode={s.mode}
+        totalRounds={rounds}
         newBest={s.newBest}
-        onPlayAgain={() => s.startGame(s.mode.id)}
+        onPlayAgain={() => s.startGame(s.mode.id, rounds)}
         onHome={() => {
           s.quit();
           router.push('/');
@@ -70,7 +71,7 @@ export default function GameHost() {
         result={result}
         seconds={s.mode.storyCardSeconds}
         paused={s.storyCardPaused}
-        isLastRound={s.roundIndex + 1 >= TOTAL_ROUNDS}
+        isLastRound={s.roundIndex + 1 >= rounds}
         onTogglePause={s.toggleStoryCardPause}
         onAdvance={s.advance}
       />
@@ -82,6 +83,7 @@ export default function GameHost() {
       <RoundIntro
         story={story}
         roundIndex={s.roundIndex}
+        totalRounds={rounds}
         grid={s.grid}
         seconds={s.secondsLimit}
         results={s.results}
@@ -100,7 +102,7 @@ export default function GameHost() {
           <div className="hud__label">Round</div>
           <div className="hud__value">
             {s.roundIndex + 1}
-            <span style={{ color: 'var(--ink-faint)', fontWeight: 400 }}>/{TOTAL_ROUNDS}</span>
+            <span style={{ color: 'var(--ink-faint)', fontWeight: 400 }}>/{rounds}</span>
           </div>
         </div>
 
@@ -147,7 +149,7 @@ export default function GameHost() {
         </button>
       </div>
 
-      <ProgressRail results={s.results} current={s.roundIndex} />
+      <ProgressRail results={s.results} current={s.roundIndex} total={rounds} />
 
       <p className="hint">
         Drag one piece onto another to swap them &middot; or tap one, then tap another

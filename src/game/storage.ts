@@ -31,17 +31,35 @@ function write(key: string, value: unknown): void {
   }
 }
 
-export function getBest(mode: ModeId): BestRecord | null {
-  return read<BestRecord | null>(`best.${mode}`, null);
+/**
+ * Best scores are kept per mode AND per session length: a twenty-round total
+ * would otherwise permanently beat every five-round game, so short games could
+ * never show a personal best.
+ */
+export function getBest(mode: ModeId, rounds: number): BestRecord | null {
+  return read<BestRecord | null>(`best.${mode}.${rounds}`, null);
 }
 
-export function recordRun(mode: ModeId, score: number, goldStars: number): boolean {
-  const current = getBest(mode);
+export function recordRun(
+  mode: ModeId,
+  rounds: number,
+  score: number,
+  goldStars: number
+): boolean {
+  const current = getBest(mode, rounds);
   const isBest = !current || score > current.score;
   if (isBest) {
-    write(`best.${mode}`, { score, goldStars, at: new Date().toISOString() });
+    write(`best.${mode}.${rounds}`, { score, goldStars, at: new Date().toISOString() });
   }
   return isBest;
+}
+
+export function getLastLength(): number | null {
+  return read<number | null>('lastLength', null);
+}
+
+export function setLastLength(rounds: number): void {
+  write('lastLength', rounds);
 }
 
 export function getLastMode(): ModeId | null {

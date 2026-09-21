@@ -1,4 +1,4 @@
-import type { GameMode, GridSize, ModeId } from '@/types';
+import type { GameMode, GridSize, ModeId, SessionLength } from '@/types';
 
 /**
  * Difficulty levels.
@@ -10,6 +10,10 @@ import type { GameMode, GridSize, ModeId } from '@/types';
  *   1. bigger grid   (3x3 = 9 tiles -> 4x4 = 16 -> 5x5 = 25)
  *   2. tighter clock
  *   3. removing the Peek safety net
+ *
+ * `progress` runs 0 (first round) to 1 (last round) whatever the session
+ * length, so a 5-puzzle game ramps through the same difficulty arc as a
+ * 20-puzzle one rather than never leaving the opening grid.
  */
 export const MODES: Record<ModeId, GameMode> = {
   'little-ones': {
@@ -30,8 +34,8 @@ export const MODES: Record<ModeId, GameMode> = {
     label: 'Standard',
     tagline: 'Ages 8+',
     description: 'Starts at 3x3 and grows to 4x4. Peeks cost 25 points.',
-    gridFor: (round) => (round < 6 ? 3 : 4),
-    secondsFor: (_round, grid) => (grid === 3 ? 45 : 60),
+    gridFor: (progress) => (progress < 0.3 ? 3 : 4),
+    secondsFor: (_progress, grid) => (grid === 3 ? 45 : 60),
     peekEnabled: true,
     peekPenalty: 25,
     peekSeconds: 2.5,
@@ -43,8 +47,8 @@ export const MODES: Record<ModeId, GameMode> = {
     label: 'Champion',
     tagline: 'Youth groups',
     description: 'Straight to 4x4 with a tight clock. No peeking.',
-    gridFor: (round) => (round < 3 ? 3 : 4),
-    secondsFor: (_round, grid) => (grid === 3 ? 30 : 40),
+    gridFor: (progress) => (progress < 0.15 ? 3 : 4),
+    secondsFor: (_progress, grid) => (grid === 3 ? 30 : 40),
     peekEnabled: false,
     peekPenalty: 0,
     peekSeconds: 0,
@@ -56,8 +60,8 @@ export const MODES: Record<ModeId, GameMode> = {
     label: 'Master',
     tagline: 'Adults, and show-offs',
     description: '4x4 rising to a brutal 5x5. No peeking, no mercy.',
-    gridFor: (round) => (round < 8 ? 4 : 5),
-    secondsFor: (_round, grid) => (grid === 4 ? 35 : 55),
+    gridFor: (progress) => (progress < 0.4 ? 4 : 5),
+    secondsFor: (_progress, grid) => (grid === 4 ? 35 : 55),
     peekEnabled: false,
     peekPenalty: 0,
     peekSeconds: 0,
@@ -76,4 +80,32 @@ export function modeById(id: string): GameMode {
 
 export function tilesFor(grid: GridSize): number {
   return grid * grid;
+}
+
+// ---------------------------------------------------------------------------
+// Session length
+// ---------------------------------------------------------------------------
+
+export interface LengthOption {
+  rounds: SessionLength;
+  label: string;
+  blurb: string;
+  /** Rough minutes including story cards, for the picker. */
+  minutes: string;
+}
+
+/**
+ * Twenty rounds is a ~20 minute commitment - great for a Sunday school slot,
+ * too long for "one more go". Short games exist so a win is reachable.
+ */
+export const LENGTHS: LengthOption[] = [
+  { rounds: 5, label: 'Quick', blurb: 'Five puzzles', minutes: '~5 min' },
+  { rounds: 10, label: 'Half', blurb: 'Ten puzzles', minutes: '~10 min' },
+  { rounds: 20, label: 'Full', blurb: 'All twenty, Genesis to Jeremiah', minutes: '~20 min' },
+];
+
+export const DEFAULT_LENGTH: SessionLength = 10;
+
+export function isSessionLength(n: number): n is SessionLength {
+  return LENGTHS.some((l) => l.rounds === n);
 }

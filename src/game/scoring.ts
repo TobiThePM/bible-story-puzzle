@@ -65,20 +65,30 @@ export function goldStarCount(results: RoundResult[]): number {
 
 export interface Rank {
   name: string;
-  min: number;
+  /** Minimum AVERAGE score per round to earn this rank. */
+  minPerRound: number;
   blurb: string;
 }
 
-/** Tuned to Standard mode, where a perfect run is roughly 7,400. */
+/**
+ * Ranks are thresholds on the average score PER ROUND, not on the total.
+ *
+ * They used to be totals tuned to a twenty-round game, which meant a five-round
+ * game could never rank above Seeker no matter how well it was played. Judging
+ * the average makes a short game and a long game equally winnable.
+ *
+ * A strong Standard round is roughly 350 points.
+ */
 export const RANKS: Rank[] = [
-  { name: 'Faithful Witness', min: 7000, blurb: 'You know these stories by heart.' },
-  { name: 'Champion', min: 6000, blurb: 'Fast hands and a sharp eye.' },
-  { name: 'Watchman', min: 4500, blurb: 'Steady, and paying attention.' },
-  { name: 'Scribe', min: 3000, blurb: 'Learning the stories well.' },
-  { name: 'Student', min: 1500, blurb: 'A good start. Go again.' },
-  { name: 'Seeker', min: 0, blurb: 'Every journey starts somewhere.' },
+  { name: 'Faithful Witness', minPerRound: 350, blurb: 'You know these stories by heart.' },
+  { name: 'Champion', minPerRound: 300, blurb: 'Fast hands and a sharp eye.' },
+  { name: 'Watchman', minPerRound: 225, blurb: 'Steady, and paying attention.' },
+  { name: 'Scribe', minPerRound: 150, blurb: 'Learning the stories well.' },
+  { name: 'Student', minPerRound: 75, blurb: 'A good start. Go again.' },
+  { name: 'Seeker', minPerRound: 0, blurb: 'Every journey starts somewhere.' },
 ];
 
-export function rankFor(score: number): Rank {
-  return RANKS.find((r) => score >= r.min) ?? RANKS[RANKS.length - 1];
+export function rankFor(score: number, rounds: number): Rank {
+  const perRound = rounds > 0 ? score / rounds : 0;
+  return RANKS.find((r) => perRound >= r.minPerRound) ?? RANKS[RANKS.length - 1];
 }

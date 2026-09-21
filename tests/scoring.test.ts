@@ -94,14 +94,32 @@ describe('totals', () => {
 });
 
 describe('rankFor', () => {
-  it('maps scores to the right rank', () => {
-    expect(rankFor(0).name).toBe('Seeker');
-    expect(rankFor(1499).name).toBe('Seeker');
-    expect(rankFor(1500).name).toBe('Student');
-    expect(rankFor(3000).name).toBe('Scribe');
-    expect(rankFor(4500).name).toBe('Watchman');
-    expect(rankFor(6000).name).toBe('Champion');
-    expect(rankFor(7000).name).toBe('Faithful Witness');
-    expect(rankFor(99999).name).toBe('Faithful Witness');
+  // Ranks judge the AVERAGE per round, so a short game is as winnable as a long one.
+  it('maps a 20-round score to the right rank', () => {
+    expect(rankFor(0, 20).name).toBe('Seeker');
+    expect(rankFor(1499, 20).name).toBe('Seeker');
+    expect(rankFor(1500, 20).name).toBe('Student');
+    expect(rankFor(3000, 20).name).toBe('Scribe');
+    expect(rankFor(4500, 20).name).toBe('Watchman');
+    expect(rankFor(6000, 20).name).toBe('Champion');
+    expect(rankFor(7000, 20).name).toBe('Faithful Witness');
+  });
+
+  it('gives the same rank for the same standard of play at any length', () => {
+    for (const rounds of [5, 10, 20]) {
+      expect(rankFor(350 * rounds, rounds).name, String(rounds)).toBe('Faithful Witness');
+      expect(rankFor(150 * rounds, rounds).name, String(rounds)).toBe('Scribe');
+      expect(rankFor(10 * rounds, rounds).name, String(rounds)).toBe('Seeker');
+    }
+  });
+
+  // The bug this guards: with total-based thresholds a perfect five-round
+  // game scored ~1,850 and ranked 'Student' forever.
+  it('lets a strong five-round game reach the top rank', () => {
+    expect(rankFor(1850, 5).name).toBe('Faithful Witness');
+  });
+
+  it('handles zero rounds without dividing by zero', () => {
+    expect(rankFor(0, 0).name).toBe('Seeker');
   });
 });
