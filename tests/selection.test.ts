@@ -239,3 +239,25 @@ describe('transitional pool fallback', () => {
     expect(typeof poolsReady()).toBe('boolean');
   });
 });
+
+describe('the ready gate', () => {
+  // Story text is written long before its illustration exists. `ready` is what
+  // keeps main shippable mid-art-run: the game serves only illustrated
+  // stories, and a content test proves their files are really on disk.
+  it('never serves a story that has no illustration yet', () => {
+    for (const pool of ['one', 'two', 'three'] as const) {
+      for (const story of storiesInPool(pool)) {
+        expect(story.ready, `${story.id} was served without artwork`).toBe(true);
+      }
+    }
+  });
+
+  it('never deals an unready story into a session', () => {
+    for (const id of MODE_ORDER) {
+      for (const { rounds } of LENGTHS) {
+        const picked = pickStories(effectivePool(MODES[id].pool), rounds, `ready-${id}`);
+        for (const story of picked) expect(story.ready, story.id).toBe(true);
+      }
+    }
+  });
+});

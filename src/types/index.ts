@@ -25,6 +25,14 @@ export interface Story {
   thumb: string;
   /** Screen-reader description of the illustration. */
   alt: string;
+  /**
+   * True once this story has its illustration committed and checked.
+   *
+   * Stories are written before their art exists, so the game only ever
+   * serves ready ones. Flip this to true in the same commit that adds the
+   * image, and a content test will verify the file is really there.
+   */
+  ready: boolean;
 }
 
 export type ModeId = 'still-waters' | 'rising-tide' | 'refiners-fire';

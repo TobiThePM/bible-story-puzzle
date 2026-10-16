@@ -23,8 +23,19 @@ import { rngFrom } from './rng';
  * Selection is seeded, so a session is reproducible - and so Phase 2
  * multiplayer can deal every player in a room the identical set.
  */
+/**
+ * Only READY stories are ever served. A story's text is written long before
+ * its illustration exists, so `ready` is the gate: it flips true in the same
+ * commit that adds the image, and a content test checks the file is really
+ * on disk. That keeps main shippable at every point during an art run.
+ */
 export function storiesInPool(pool: StoryPool): Story[] {
-  return STORIES.filter((s) => s.pool === pool).sort((a, b) => a.order - b.order);
+  return STORIES.filter((s) => s.pool === pool && s.ready).sort((a, b) => a.order - b.order);
+}
+
+/** Written but not yet illustrated - useful for progress reporting. */
+export function pendingInPool(pool: StoryPool): Story[] {
+  return STORIES.filter((s) => s.pool === pool && !s.ready).sort((a, b) => a.order - b.order);
 }
 
 /**

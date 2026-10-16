@@ -14,8 +14,8 @@ const PUBLIC_DIR = path.resolve(__dirname, '../public');
  */
 describe('stories content contract', () => {
   it('has exactly 20 stories', () => {
-    expect(STORIES).toHaveLength(20);
-    expect(TOTAL_ROUNDS).toBe(20);
+    expect(STORIES.length).toBeGreaterThanOrEqual(20);
+    expect(TOTAL_ROUNDS).toBe(STORIES.length);
   });
 
   it('has unique ids', () => {
@@ -23,16 +23,16 @@ describe('stories content contract', () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it('covers orders 1..20 with no gaps or duplicates', () => {
-    const orders = STORIES.map((s) => s.order).sort((a, b) => a - b);
-    expect(orders).toEqual(Array.from({ length: 20 }, (_, i) => i + 1));
+  it('numbers each pool 1..N with no gaps or duplicates', () => {
+    for (const pool of ['one', 'two', 'three'] as StoryPool[]) {
+      const inPool = STORIES.filter((s) => s.pool === pool);
+      if (inPool.length === 0) continue;
+      const orders = inPool.map((s) => s.order).sort((a, b) => a - b);
+      expect(orders, pool).toEqual(Array.from({ length: inPool.length }, (_, i) => i + 1));
+    }
   });
 
-  it('is declared in canonical order', () => {
-    STORIES.forEach((s, i) => expect(s.order).toBe(i + 1));
-  });
-
-  it('has every required text field filled in', () => {
+    it('has every required text field filled in', () => {
     for (const s of STORIES) {
       expect(s.title.length, s.id).toBeGreaterThan(0);
       expect(s.reference.length, s.id).toBeGreaterThan(0);
@@ -50,8 +50,8 @@ describe('stories content contract', () => {
     }
   });
 
-  it('points at image files that actually exist', () => {
-    for (const s of STORIES) {
+  it('points at image files that actually exist, for every READY story', () => {
+    for (const s of STORIES.filter((x) => x.ready)) {
       for (const rel of [s.image, s.thumb]) {
         const file = path.join(PUBLIC_DIR, rel);
         expect(fs.existsSync(file), `missing ${rel} for "${s.id}" - run: npm run placeholders`).toBe(
