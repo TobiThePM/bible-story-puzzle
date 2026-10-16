@@ -87,9 +87,28 @@ export default function Home() {
 
   const best = bests[`${mode}.${length}`];
 
+  // ---- first paint --------------------------------------------------------
+
+  // Which screen to show depends on localStorage, which only exists after
+  // mount. Rendering the level picker in the static HTML meant a new visitor
+  // saw it flash before it swapped to the name gate, so hold the title alone
+  // until we know. The markup below is what the static export contains.
+  if (!ready) {
+    return (
+      <main className="page">
+        <div className="shell home">
+          <h1 className="home__title">Bible Story Puzzle</h1>
+          <p className="home__tagline">
+            Discover Scripture through some of the Bible&rsquo;s greatest stories.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
   // ---- name gate ----------------------------------------------------------
 
-  if (ready && (!profile || switching)) {
+  if (!profile || switching) {
     return (
       <main className="page">
         <div className="shell home">
