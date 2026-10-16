@@ -330,7 +330,7 @@ export const STORIES: Story[] = [
     image: '/stories/21-garden-of-eden.webp',
     thumb: '/stories/21-garden-of-eden-thumb.webp',
     alt: 'A lush garden of fruit trees and ferns with a clear river winding through it.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'rainbow-promise',
@@ -345,7 +345,7 @@ export const STORIES: Story[] = [
     image: '/stories/22-rainbow-promise.webp',
     thumb: '/stories/22-rainbow-promise-thumb.webp',
     alt: 'A brilliant rainbow arching over a drying hillside with the ark resting behind.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'abraham-isaac',

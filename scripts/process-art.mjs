@@ -27,7 +27,24 @@ const OUT_DIR = path.resolve(__dirname, '../public/stories');
 
 const FULL = 1200;
 const THUMB = 240;
-const GRIDS = [3, 4, 5];
+
+/**
+ * Which grids each pool is actually played at. Judging every picture at 5x5
+ * chases failures that can never happen: Rising Tide (pool two) tops out at
+ * 4x4, and Still Waters (pool one) never leaves 3x3. Only Refiner's Fire
+ * (pool three) uses 5x5.
+ *
+ * Filenames 01-20 are pool one, 21-40 pool two, 41-60 pool three.
+ */
+const GRIDS_FOR_POOL = { one: [3], two: [3, 4], three: [4, 5] };
+
+function poolForFile(name) {
+  const n = parseInt(name.slice(0, 2), 10);
+  if (!Number.isFinite(n)) return 'three'; // unknown: judge most strictly
+  if (n <= 20) return 'one';
+  if (n <= 40) return 'two';
+  return 'three';
+}
 
 /** Mean per-channel difference below this and two tiles read as "the same". */
 const CONFUSABLE_THRESHOLD = 12;
@@ -94,8 +111,10 @@ async function processOne(file) {
   const kb = (full.length / 1024).toFixed(0);
   const thumbKb = (thumb.length / 1024).toFixed(0);
 
+  const pool = poolForFile(name);
+  const grids = GRIDS_FOR_POOL[pool];
   const results = [];
-  for (const grid of GRIDS) results.push(await checkGrid(full, grid));
+  for (const grid of grids) results.push(await checkGrid(full, grid));
 
   const failed = results.some((r) => r.failures.length > 0);
   const tightest = results.reduce((a, b) => (a.worst.distance < b.worst.distance ? a : b));
