@@ -3,8 +3,14 @@ export type GridSize = 3 | 4 | 5;
 export interface Story {
   /** Stable slug. Never reused, never renamed once shipped. */
   id: string;
-  /** 1-20, canonical biblical order. */
+  /** Position in this story's own pool, 1-20, in biblical order. */
   order: number;
+  /**
+   * Which level's pool this story belongs to. Every pool travels the whole
+   * arc from Genesis to the Resurrection, so a player reaches the Cross
+   * whatever difficulty they choose.
+   */
+  pool: StoryPool;
   title: string;
   /** e.g. "Joshua 6:12-20" */
   reference: string;
@@ -21,7 +27,7 @@ export interface Story {
   alt: string;
 }
 
-export type ModeId = 'little-ones' | 'standard' | 'champion' | 'master';
+export type ModeId = 'still-waters' | 'rising-tide' | 'refiners-fire';
 
 /** How many puzzles in one sitting. */
 export type SessionLength = 5 | 10 | 20;
@@ -46,7 +52,21 @@ export interface GameMode {
   peekPenalty: number;
   peekSeconds: number;
   storyCardSeconds: number;
+  /**
+   * Free seconds to study the finished picture before the clock starts.
+   *
+   * Added in v2. Adult testers said they could not make sense of a scrambled
+   * image before the timer ran out - so now every round opens by showing the
+   * completed painting, like the lid of a jigsaw box. Harder levels get a
+   * shorter look.
+   */
+  previewSeconds: number;
+  /** Which pool of stories this level draws from. */
+  pool: StoryPool;
 }
+
+/** Each level has its own set of stories, so levels never repeat each other. */
+export type StoryPool = 'one' | 'two' | 'three';
 
 /** 0 on the first round, 1 on the last, for any session length. */
 export function roundProgress(roundIndex: number, totalRounds: number): number {

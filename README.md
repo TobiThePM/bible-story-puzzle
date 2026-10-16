@@ -86,14 +86,39 @@ Two things scale with length automatically:
 Best scores are stored per mode AND per length, so a 20-round total cannot
 permanently outrank every 5-round game.
 
-## Difficulty levels
+## Levels
 
-| Level | Grid | Clock | Peek |
-|---|---|---|---|
-| **Little Ones** (4-7) | 3x3 throughout | 90s | Free, no penalty |
-| **Standard** (8+) | 3x3 → 4x4 | 45s / 60s | -25 points |
-| **Champion** (youth groups) | 3x3 → 4x4 | 30s / 40s | Disabled |
-| **Master** (adults) | 4x4 → 5x5 | 35s / 55s | Disabled |
+| Level | Grid | Clock | Free look | Peek |
+|---|---|---|---|---|
+| **Still Waters** (Easy) | 3x3 throughout | 90s | 4s | Free |
+| **Rising Tide** (Intermediate) | 3x3 -> 4x4 | 60s / 100s | 3s | -25 |
+| **Refiner's Fire** (Hard) | 4x4 -> 5x5 | 90s / 150s | 2s | -40 |
+
+v2 replaced four age-labelled modes with three named by intensity. Adults were
+the first testers; the age labels read as childish and only the two easiest
+modes were playable at all.
+
+**Timing was the headline fix.** Testers could not make sense of a scrambled
+picture before the clock ran out. Three changes address it:
+
+1. Every clock is far longer, and bigger grids get disproportionately more time.
+   A 5x5 is not 1.5x harder than a 4x4, it is roughly 3x harder.
+2. Every round opens with a free look at the finished painting, like the lid of
+   a jigsaw box. Harder levels get a shorter look.
+3. Peek works on every level. v1 disabled it on the two hardest - removing the
+   safety net exactly where it was needed most.
+
+Tests in  enforce a floor of 3.5 seconds per tile on
+every round of every level, and that a bigger grid always gets more time.
+
+## Profiles
+
+Players type a name and see their own best scores. Up to eight profiles share a
+device, so a family or a class can pass one tablet around.
+
+Still no accounts, no passwords, no server, no network calls. Names and scores
+live in  and never leave the device - which is what keeps this
+safe to hand to children without a privacy policy or consent machinery.
 
 ---
 

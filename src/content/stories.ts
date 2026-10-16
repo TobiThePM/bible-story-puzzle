@@ -16,6 +16,7 @@ export const STORIES: Story[] = [
   {
     id: 'creation',
     order: 1,
+    pool: 'one',
     title: 'Let There Be Light',
     reference: 'Genesis 1:1-5',
     retelling:
@@ -29,6 +30,7 @@ export const STORIES: Story[] = [
   {
     id: 'noahs-ark',
     order: 2,
+    pool: 'one',
     title: "Noah's Ark",
     reference: 'Genesis 7:11-24',
     retelling:
@@ -42,6 +44,7 @@ export const STORIES: Story[] = [
   {
     id: 'tower-of-babel',
     order: 3,
+    pool: 'one',
     title: 'The Tower of Babel',
     reference: 'Genesis 11:1-9',
     retelling:
@@ -56,6 +59,7 @@ export const STORIES: Story[] = [
   {
     id: 'abraham-stars',
     order: 4,
+    pool: 'one',
     title: 'Count the Stars',
     reference: 'Genesis 15:1-6',
     retelling:
@@ -69,6 +73,7 @@ export const STORIES: Story[] = [
   {
     id: 'josephs-coat',
     order: 5,
+    pool: 'one',
     title: "Joseph's Coat of Many Colours",
     reference: 'Genesis 37:3-28',
     retelling:
@@ -82,6 +87,7 @@ export const STORIES: Story[] = [
   {
     id: 'burning-bush',
     order: 6,
+    pool: 'one',
     title: 'The Burning Bush',
     reference: 'Exodus 3:1-6',
     retelling:
@@ -96,6 +102,7 @@ export const STORIES: Story[] = [
   {
     id: 'passover',
     order: 7,
+    pool: 'one',
     title: 'The Night of the Passover',
     reference: 'Exodus 12:21-30',
     retelling:
@@ -109,6 +116,7 @@ export const STORIES: Story[] = [
   {
     id: 'red-sea',
     order: 8,
+    pool: 'one',
     title: 'Crossing the Red Sea',
     reference: 'Exodus 14:21-31',
     retelling:
@@ -122,6 +130,7 @@ export const STORIES: Story[] = [
   {
     id: 'ten-commandments',
     order: 9,
+    pool: 'one',
     title: 'The Ten Commandments',
     reference: 'Exodus 19:16-20:17',
     retelling:
@@ -136,6 +145,7 @@ export const STORIES: Story[] = [
   {
     id: 'jericho',
     order: 10,
+    pool: 'one',
     title: 'The Walls of Jericho',
     reference: 'Joshua 6:12-20',
     retelling:
@@ -149,6 +159,7 @@ export const STORIES: Story[] = [
   {
     id: 'gideons-300',
     order: 11,
+    pool: 'one',
     title: "Gideon's Three Hundred",
     reference: 'Judges 7:16-22',
     retelling:
@@ -162,6 +173,7 @@ export const STORIES: Story[] = [
   {
     id: 'samson',
     order: 12,
+    pool: 'one',
     title: 'Samson and the Pillars',
     reference: 'Judges 16:23-30',
     retelling:
@@ -176,6 +188,7 @@ export const STORIES: Story[] = [
   {
     id: 'david-goliath',
     order: 13,
+    pool: 'one',
     title: 'David and Goliath',
     reference: '1 Samuel 17:38-51',
     retelling:
@@ -189,6 +202,7 @@ export const STORIES: Story[] = [
   {
     id: 'solomons-temple',
     order: 14,
+    pool: 'one',
     title: "Solomon's Temple",
     reference: '1 Kings 6:1-14',
     retelling:
@@ -202,6 +216,7 @@ export const STORIES: Story[] = [
   {
     id: 'mount-carmel',
     order: 15,
+    pool: 'one',
     title: 'Fire on Mount Carmel',
     reference: '1 Kings 18:30-39',
     retelling:
@@ -215,6 +230,7 @@ export const STORIES: Story[] = [
   {
     id: 'chariots-of-fire',
     order: 16,
+    pool: 'one',
     title: 'The Chariots of Fire',
     reference: '2 Kings 6:15-17',
     retelling:
@@ -228,6 +244,7 @@ export const STORIES: Story[] = [
   {
     id: 'fiery-furnace',
     order: 17,
+    pool: 'one',
     title: 'The Fiery Furnace',
     reference: 'Daniel 3:19-27',
     retelling:
@@ -241,6 +258,7 @@ export const STORIES: Story[] = [
   {
     id: 'lions-den',
     order: 18,
+    pool: 'one',
     title: "Daniel in the Lions' Den",
     reference: 'Daniel 6:16-23',
     retelling:
@@ -254,6 +272,7 @@ export const STORIES: Story[] = [
   {
     id: 'jonah',
     order: 19,
+    pool: 'one',
     title: 'Jonah and the Great Fish',
     reference: 'Jonah 1:15-2:10',
     retelling:
@@ -267,6 +286,7 @@ export const STORIES: Story[] = [
   {
     id: 'potters-house',
     order: 20,
+    pool: 'one',
     title: "The Potter's House",
     reference: 'Jeremiah 18:1-6',
     retelling:

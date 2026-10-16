@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { pickStories } from '@/game/selection';
+import { pickStories, storiesInPool, effectivePool, poolsReady } from '@/game/selection';
 import { STORIES } from '@/content/stories';
 import { LENGTHS, MODES, MODE_ORDER } from '@/content/modes';
 import { roundProgress } from '@/types';
@@ -7,14 +7,14 @@ import { roundProgress } from '@/types';
 describe('pickStories', () => {
   it('returns exactly the requested number of stories', () => {
     for (const { rounds } of LENGTHS) {
-      expect(pickStories(rounds, 'seed-a')).toHaveLength(rounds);
+      expect(pickStories('one', rounds, 'seed-a')).toHaveLength(rounds);
     }
   });
 
   it('never repeats a story within one session', () => {
     for (const { rounds } of LENGTHS) {
       for (let i = 0; i < 200; i++) {
-        const picked = pickStories(rounds, `dupe-${rounds}-${i}`);
+        const picked = pickStories('one', rounds, `dupe-${rounds}-${i}`);
         expect(new Set(picked.map((s) => s.id)).size).toBe(rounds);
       }
     }
@@ -24,20 +24,20 @@ describe('pickStories', () => {
   it('always returns stories in canonical order', () => {
     for (const { rounds } of LENGTHS) {
       for (let i = 0; i < 200; i++) {
-        const orders = pickStories(rounds, `order-${rounds}-${i}`).map((s) => s.order);
+        const orders = pickStories('one', rounds, `order-${rounds}-${i}`).map((s) => s.order);
         expect([...orders].sort((a, b) => a - b)).toEqual(orders);
       }
     }
   });
 
   it('a full-length game is every story, in order', () => {
-    const picked = pickStories(20, 'anything');
-    expect(picked.map((s) => s.id)).toEqual(STORIES.map((s) => s.id));
+    const picked = pickStories('one', 20, 'anything');
+    expect(picked.map((s) => s.id)).toEqual(storiesInPool('one').map((s) => s.id));
   });
 
   it('is deterministic for a given seed', () => {
-    expect(pickStories(5, 'same').map((s) => s.id)).toEqual(
-      pickStories(5, 'same').map((s) => s.id)
+    expect(pickStories('one', 5, 'same').map((s) => s.id)).toEqual(
+      pickStories('one', 5, 'same').map((s) => s.id)
     );
   });
 
@@ -45,7 +45,7 @@ describe('pickStories', () => {
   it('varies the selection across seeds', () => {
     const seen = new Set<string>();
     for (let i = 0; i < 100; i++) {
-      seen.add(pickStories(5, `vary-${i}`).map((s) => s.id).join(','));
+      seen.add(pickStories('one', 5, `vary-${i}`).map((s) => s.id).join(','));
     }
     expect(seen.size).toBeGreaterThan(50);
   });
@@ -54,15 +54,15 @@ describe('pickStories', () => {
   it('can reach every story in a short game', () => {
     const seen = new Set<string>();
     for (let i = 0; i < 500; i++) {
-      for (const s of pickStories(5, `reach-${i}`)) seen.add(s.id);
+      for (const s of pickStories('one', 5, `reach-${i}`)) seen.add(s.id);
     }
-    expect(seen.size).toBe(STORIES.length);
+    expect(seen.size).toBe(storiesInPool('one').length);
   });
 
   it('handles degenerate lengths safely', () => {
-    expect(pickStories(0, 'x')).toEqual([]);
-    expect(pickStories(-3, 'x')).toEqual([]);
-    expect(pickStories(999, 'x')).toHaveLength(STORIES.length);
+    expect(pickStories('one', 0, 'x')).toEqual([]);
+    expect(pickStories('one', -3, 'x')).toEqual([]);
+    expect(pickStories('one', 999, 'x')).toHaveLength(storiesInPool('one').length);
   });
 });
 
@@ -82,14 +82,14 @@ describe('difficulty ramps regardless of session length', () => {
 
   // The bug this guards: ramping on absolute round number meant a 5-round
   // Standard game never left 3x3, because the switch happened at round 6.
-  it('a short Standard game still reaches 4x4', () => {
-    const grids = [0, 1, 2, 3, 4].map((i) => MODES.standard.gridFor(roundProgress(i, 5)));
+  it('a short Rising Tide game still reaches 4x4', () => {
+    const grids = [0, 1, 2, 3, 4].map((i) => MODES['rising-tide'].gridFor(roundProgress(i, 5)));
     expect(grids).toContain(3);
     expect(grids).toContain(4);
   });
 
-  it('a short Master game still reaches 5x5', () => {
-    const grids = [0, 1, 2, 3, 4].map((i) => MODES.master.gridFor(roundProgress(i, 5)));
+  it('a short Refiners Fire game still reaches 5x5', () => {
+    const grids = [0, 1, 2, 3, 4].map((i) => MODES['refiners-fire'].gridFor(roundProgress(i, 5)));
     expect(grids).toContain(5);
   });
 
@@ -131,5 +131,111 @@ describe('roundProgress', () => {
   it('does not divide by zero on a one-round session', () => {
     expect(roundProgress(0, 1)).toBe(0);
     expect(roundProgress(0, 0)).toBe(0);
+  });
+});
+
+describe('v2 playability guarantees', () => {
+  // These exist because v1 shipped clocks that adult testers could not beat.
+  // Each one encodes a specific thing that went wrong.
+
+  it('gives every level a free look at the picture before the clock starts', () => {
+    for (const id of MODE_ORDER) {
+      expect(MODES[id].previewSeconds, id).toBeGreaterThan(0);
+    }
+  });
+
+  it('leaves Peek available on every level', () => {
+    // v1 disabled Peek on the two hardest levels - removing the safety net
+    // exactly where testers needed it most.
+    for (const id of MODE_ORDER) {
+      expect(MODES[id].peekEnabled, id).toBe(true);
+    }
+  });
+
+  it('gives bigger grids MORE time, never less', () => {
+    for (const id of MODE_ORDER) {
+      const mode = MODES[id];
+      const samples = [0, 0.25, 0.5, 0.75, 1].map((p) => ({
+        grid: mode.gridFor(p),
+        seconds: mode.secondsFor(p, mode.gridFor(p)),
+      }));
+      for (const a of samples) {
+        for (const b of samples) {
+          if (a.grid < b.grid) {
+            expect(b.seconds, `${id}: ${b.grid}x${b.grid} vs ${a.grid}x${a.grid}`).toBeGreaterThan(
+              a.seconds
+            );
+          }
+        }
+      }
+    }
+  });
+
+  it('allows at least 3.5 seconds per tile on every round of every level', () => {
+    // A tester needs time to parse the picture AND move every piece. Below
+    // roughly this floor the round stops being solvable and starts being luck.
+    for (const id of MODE_ORDER) {
+      for (const { rounds } of LENGTHS) {
+        for (let i = 0; i < rounds; i++) {
+          const p = roundProgress(i, rounds);
+          const grid = MODES[id].gridFor(p);
+          const perTile = MODES[id].secondsFor(p, grid) / (grid * grid);
+          expect(perTile, `${id} @ ${rounds}, round ${i} (${grid}x${grid})`).toBeGreaterThanOrEqual(
+            3.5
+          );
+        }
+      }
+    }
+  });
+
+  it('is more generous at every grid size than v1 was', () => {
+    const v1 = { 3: 45, 4: 60, 5: 55 } as Record<number, number>;
+    for (const id of MODE_ORDER) {
+      for (const p of [0, 0.5, 1]) {
+        const grid = MODES[id].gridFor(p);
+        expect(MODES[id].secondsFor(p, grid), `${id} ${grid}x${grid}`).toBeGreaterThanOrEqual(
+          v1[grid]
+        );
+      }
+    }
+  });
+});
+
+describe('story pools', () => {
+  it('gives every level its own pool', () => {
+    const pools = MODE_ORDER.map((id) => MODES[id].pool);
+    expect(new Set(pools).size).toBe(MODE_ORDER.length);
+  });
+
+  it('never serves the same story on two different levels', () => {
+    const seen = new Set<string>();
+    for (const id of MODE_ORDER) {
+      for (const story of storiesInPool(MODES[id].pool)) {
+        expect(seen.has(story.id), `${story.id} appears in more than one pool`).toBe(false);
+        seen.add(story.id);
+      }
+    }
+  });
+});
+
+describe('transitional pool fallback', () => {
+  // Pools two and three are waiting on their forty illustrations. Until then
+  // those levels borrow pool one rather than dealing an empty board.
+  it('never returns an empty set for any level', () => {
+    for (const id of MODE_ORDER) {
+      for (const { rounds } of LENGTHS) {
+        const picked = pickStories(effectivePool(MODES[id].pool), rounds, `fallback-${id}`);
+        expect(picked.length, `${id} @ ${rounds}`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('stops falling back on its own once every pool has stories', () => {
+    for (const p of ['one', 'two', 'three'] as const) {
+      const expected = storiesInPool(p).length > 0 ? p : 'one';
+      expect(effectivePool(p)).toBe(expected);
+    }
+    // When this flips true, delete effectivePool and this block.
+    expect(typeof poolsReady()).toBe('boolean');
   });
 });

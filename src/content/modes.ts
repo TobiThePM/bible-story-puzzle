@@ -1,78 +1,78 @@
 import type { GameMode, GridSize, ModeId, SessionLength } from '@/types';
 
 /**
- * Difficulty levels.
+ * THREE LEVELS.
  *
- * Every number here is configuration, deliberately NOT hardcoded anywhere else.
- * After playtesting with real children, tune this file and nothing else.
+ * v2 replaced four age-labelled modes ("Little Ones, Ages 4-7") with three
+ * named by intensity. Adults were the first testers and the age labels read as
+ * childish; worse, only the two easiest were playable at all.
  *
- * Difficulty is raised in three ways, in this order of preference:
- *   1. bigger grid   (3x3 = 9 tiles -> 4x4 = 16 -> 5x5 = 25)
- *   2. tighter clock
- *   3. removing the Peek safety net
+ * TIMING IS THE HEADLINE FIX. Testers said they could not make sense of a
+ * scrambled picture before the clock ran out. Three changes address that:
  *
- * `progress` runs 0 (first round) to 1 (last round) whatever the session
- * length, so a 5-puzzle game ramps through the same difficulty arc as a
- * 20-puzzle one rather than never leaving the opening grid.
+ *   1. Every clock is far longer, and bigger grids get disproportionately more
+ *      time - a 5x5 is not 1.5x harder than a 4x4, it is roughly 3x harder.
+ *   2. Every round now opens with a free look at the finished picture
+ *      (previewSeconds), like the lid of a jigsaw box.
+ *   3. Peek is available on ALL levels. Previously the two hardest disabled it,
+ *      which removed the only safety net exactly where it was needed most.
+ *
+ * Every number here is configuration. After playtesting, tune this file and
+ * nothing else.
  */
 export const MODES: Record<ModeId, GameMode> = {
-  'little-ones': {
-    id: 'little-ones',
-    label: 'Little Ones',
-    tagline: 'Ages 4-7',
-    description: 'Small 3x3 pictures, a generous clock, and free peeks. Nobody loses points.',
+  'still-waters': {
+    id: 'still-waters',
+    label: 'Still Waters',
+    tagline: 'Easy',
+    description: '3×3 pictures, an unhurried clock, and free peeks. Nothing is taken away.',
+    pool: 'one',
     gridFor: () => 3,
     secondsFor: () => 90,
+    previewSeconds: 4,
     peekEnabled: true,
     peekPenalty: 0,
     peekSeconds: 3,
     storyCardSeconds: 8,
   },
 
-  standard: {
-    id: 'standard',
-    label: 'Standard',
-    tagline: 'Ages 8+',
-    description: 'Starts at 3x3 and grows to 4x4. Peeks cost 25 points.',
+  'rising-tide': {
+    id: 'rising-tide',
+    label: 'Rising Tide',
+    tagline: 'Intermediate',
+    description: 'Starts at 3×3 and grows to 4×4. Room to think. Peeks cost 25.',
+    pool: 'two',
+    // was 45s / 60s in v1 - testers could not finish a 4x4 in 60s
     gridFor: (progress) => (progress < 0.3 ? 3 : 4),
-    secondsFor: (_progress, grid) => (grid === 3 ? 45 : 60),
+    secondsFor: (_progress, grid) => (grid === 3 ? 60 : 100),
+    previewSeconds: 3,
     peekEnabled: true,
     peekPenalty: 25,
     peekSeconds: 2.5,
     storyCardSeconds: 6,
   },
 
-  champion: {
-    id: 'champion',
-    label: 'Champion',
-    tagline: 'Youth groups',
-    description: 'Straight to 4x4 with a tight clock. No peeking.',
-    gridFor: (progress) => (progress < 0.15 ? 3 : 4),
-    secondsFor: (_progress, grid) => (grid === 3 ? 30 : 40),
-    peekEnabled: false,
-    peekPenalty: 0,
-    peekSeconds: 0,
-    storyCardSeconds: 6,
-  },
-
-  master: {
-    id: 'master',
-    label: 'Master',
-    tagline: 'Adults, and show-offs',
-    description: '4x4 rising to a brutal 5x5. No peeking, no mercy.',
+  'refiners-fire': {
+    id: 'refiners-fire',
+    label: "Refiner's Fire",
+    tagline: 'Hard',
+    description: '4×4 rising to a full 5×5. Hard, but never unfair. Peeks cost 40.',
+    pool: 'three',
+    // was 35s / 55s in v1, with peek disabled - effectively unplayable
     gridFor: (progress) => (progress < 0.4 ? 4 : 5),
-    secondsFor: (_progress, grid) => (grid === 4 ? 35 : 55),
-    peekEnabled: false,
-    peekPenalty: 0,
-    peekSeconds: 0,
+    secondsFor: (_progress, grid) => (grid === 4 ? 90 : 150),
+    previewSeconds: 2,
+    peekEnabled: true,
+    peekPenalty: 40,
+    peekSeconds: 2,
     storyCardSeconds: 6,
   },
 };
 
-/** Display order on the mode-select screen: easiest first. */
-export const MODE_ORDER: ModeId[] = ['little-ones', 'standard', 'champion', 'master'];
+/** Display order on the level picker: easiest first. */
+export const MODE_ORDER: ModeId[] = ['still-waters', 'rising-tide', 'refiners-fire'];
 
-export const DEFAULT_MODE: ModeId = 'standard';
+export const DEFAULT_MODE: ModeId = 'still-waters';
 
 export function modeById(id: string): GameMode {
   return MODES[id as ModeId] ?? MODES[DEFAULT_MODE];
@@ -95,13 +95,15 @@ export interface LengthOption {
 }
 
 /**
- * Twenty rounds is a ~20 minute commitment - great for a Sunday school slot,
- * too long for "one more go". Short games exist so a win is reachable.
+ * Twenty puzzles is a long sitting - right for a Sunday school slot, too long
+ * for "one more go". Short games exist so a win is reachable.
+ *
+ * Minutes below reflect the v2 clocks, which are considerably longer.
  */
 export const LENGTHS: LengthOption[] = [
-  { rounds: 5, label: 'Quick', blurb: 'Five puzzles', minutes: '~5 min' },
-  { rounds: 10, label: 'Half', blurb: 'Ten puzzles', minutes: '~10 min' },
-  { rounds: 20, label: 'Full', blurb: 'All twenty, Genesis to Jeremiah', minutes: '~20 min' },
+  { rounds: 5, label: 'Quick', blurb: 'Five puzzles', minutes: '5–10 min' },
+  { rounds: 10, label: 'Half', blurb: 'Ten puzzles', minutes: '10–20 min' },
+  { rounds: 20, label: 'Full', blurb: 'All twenty in the level', minutes: '20–40 min' },
 ];
 
 export const DEFAULT_LENGTH: SessionLength = 10;

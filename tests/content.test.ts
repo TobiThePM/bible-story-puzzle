@@ -3,6 +3,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { STORIES, TOTAL_ROUNDS } from '@/content/stories';
 import { MODES, MODE_ORDER, LENGTHS, DEFAULT_LENGTH } from '@/content/modes';
+import { storiesInPool } from '@/game/selection';
+import type { StoryPool } from '@/types';
 
 const PUBLIC_DIR = path.resolve(__dirname, '../public');
 

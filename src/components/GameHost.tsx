@@ -55,7 +55,7 @@ export default function GameHost() {
         mode={s.mode}
         totalRounds={rounds}
         newBest={s.newBest}
-        onPlayAgain={() => s.startGame(s.mode.id, rounds)}
+        onPlayAgain={() => s.startGame(s.mode.id, rounds, s.profileId)}
         onHome={() => {
           s.quit();
           router.push('/');
@@ -86,6 +86,7 @@ export default function GameHost() {
         totalRounds={rounds}
         grid={s.grid}
         seconds={s.secondsLimit}
+        previewSeconds={s.mode.previewSeconds}
         results={s.results}
         onBegin={s.beginRound}
       />

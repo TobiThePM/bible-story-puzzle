@@ -13,7 +13,7 @@ import type {
 import { roundProgress } from '@/types';
 import { MODES, DEFAULT_MODE, DEFAULT_LENGTH } from '@/content/modes';
 import { boardSeed, correctCount, isSolved, shuffle, swap } from './logic';
-import { pickStories } from './selection';
+import { pickStories, effectivePool } from './selection';
 import { scoreRound, totalScore, goldStarCount } from './scoring';
 import { makeSessionSeed } from './rng';
 import { recordRun, setLastMode, setLastLength } from './storage';
@@ -37,8 +37,10 @@ export interface GameState {
   results: RoundResult[];
   sessionSeed: string;
   newBest: boolean;
+  /** Whose scores this run is recorded against. Empty means no profile. */
+  profileId: string;
 
-  startGame: (modeId: ModeId, length: number) => void;
+  startGame: (modeId: ModeId, length: number, profileId: string) => void;
   beginRound: () => void;
   swapTiles: (a: number, b: number) => void;
   tick: (secondsElapsed: number) => void;
@@ -65,11 +67,17 @@ const initial = {
   results: [] as RoundResult[],
   sessionSeed: '',
   newBest: false,
+  profileId: '',
 };
 
 /** Build a fresh board for a round. */
 function setupRound(mode: GameMode, stories: Story[], roundIndex: number, sessionSeed: string) {
   const story = stories[roundIndex];
+  // Fail loudly rather than dealing an undefined board. In v2 this surfaced as
+  // "nothing happens when I press Play" on a level whose pool was still empty.
+  if (!story) {
+    throw new Error(`setupRound: no story at round ${roundIndex} of ${stories.length}`);
+  }
   const progress = roundProgress(roundIndex, stories.length);
   const grid = mode.gridFor(progress);
   return {
@@ -87,10 +95,10 @@ function setupRound(mode: GameMode, stories: Story[], roundIndex: number, sessio
 export const useGame = create<GameState>((set, get) => ({
   ...initial,
 
-  startGame: (modeId, length) => {
+  startGame: (modeId, length, profileId) => {
     const mode = MODES[modeId] ?? MODES[DEFAULT_MODE];
     const sessionSeed = makeSessionSeed();
-    const stories = pickStories(length ?? DEFAULT_LENGTH, sessionSeed);
+    const stories = pickStories(effectivePool(mode.pool), length ?? DEFAULT_LENGTH, sessionSeed);
 
     setLastMode(mode.id);
     setLastLength(stories.length);
@@ -100,6 +108,7 @@ export const useGame = create<GameState>((set, get) => ({
       mode,
       stories,
       sessionSeed,
+      profileId,
       results: [],
       phase: 'briefing',
       ...setupRound(mode, stories, 0, sessionSeed),
@@ -186,7 +195,7 @@ export const useGame = create<GameState>((set, get) => ({
       const stars = goldStarCount(s.results);
       set({
         phase: 'results',
-        newBest: recordRun(s.mode.id, s.stories.length, score, stars),
+        newBest: recordRun(s.profileId, s.mode.id, s.stories.length, score, stars),
       });
       return;
     }

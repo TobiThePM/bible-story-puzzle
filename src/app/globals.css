@@ -205,6 +205,81 @@ button {
   line-height: 1.6;
 }
 
+/* ---------- name gate ---------- */
+
+.gate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 40px;
+}
+
+.gate__label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.gate__input {
+  width: min(100%, 320px);
+  min-height: 58px;
+  padding: 0 20px;
+  text-align: center;
+  font-size: 1.25rem;
+  font-family: var(--font-display);
+  color: var(--ink);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.gate__input::placeholder {
+  color: var(--ink-faint);
+  font-family: var(--font);
+  font-size: 1rem;
+}
+
+.gate__input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.gate__existing {
+  margin-top: 34px;
+}
+
+.gate__names {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+/* ---------- who's playing ---------- */
+
+.whoami {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
+.whoami strong {
+  color: var(--ink);
+}
+
+.whoami__stars {
+  color: var(--gold);
+}
+
 /* ---------- pickers ---------- */
 
 .picker__heading {
@@ -623,8 +698,43 @@ button {
 }
 
 .briefing__grid {
-  margin-top: 16px;
+  margin-top: 8px;
   color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+/* The free look at the finished picture before the clock starts. */
+.briefing__image {
+  width: min(100%, 46vh, 400px);
+  aspect-ratio: 1;
+  margin: 18px auto 0;
+  border-radius: var(--radius-lg);
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-lift);
+  animation: rise 0.4s ease-out;
+}
+
+.briefing__bar {
+  height: 3px;
+  width: min(100%, 400px);
+  margin: 18px auto 0;
+  background: var(--line);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.briefing__bar span {
+  display: block;
+  height: 100%;
+  background: var(--gold);
+}
+
+.briefing__hint {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  color: var(--ink-faint);
 }
 
 /* ---------- story card ---------- */
