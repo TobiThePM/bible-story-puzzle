@@ -11,7 +11,7 @@ import {
 import { rngFrom } from '@/game/rng';
 import type { GridSize } from '@/types';
 
-const GRIDS: GridSize[] = [3, 4, 5];
+const GRIDS: GridSize[] = [3, 4];
 
 describe('solvedBoard / isSolved / correctCount', () => {
   it('a fresh board is solved', () => {

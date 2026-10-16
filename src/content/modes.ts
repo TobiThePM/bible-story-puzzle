@@ -56,11 +56,13 @@ export const MODES: Record<ModeId, GameMode> = {
     id: 'refiners-fire',
     label: "Refiner's Fire",
     tagline: 'Hard',
-    description: '4×4 rising to a full 5×5. Hard, but never unfair. Peeks cost 40.',
+    description: 'Every picture at 4×4, on a tighter clock. Hard, but never unfair. Peeks cost 40.',
     pool: 'three',
-    // was 35s / 55s in v1, with peek disabled - effectively unplayable
-    gridFor: (progress) => (progress < 0.4 ? 4 : 5),
-    secondsFor: (_progress, grid) => (grid === 4 ? 90 : 150),
+    // 5x5 was removed in v2.1: 25 tiles on a phone made pieces too small to
+    // read and the round too long. Hard now means a full 4x4 every round on a
+    // tighter clock than Rising Tide, not a bigger grid.
+    gridFor: () => 4,
+    secondsFor: () => 75,
     previewSeconds: 2,
     peekEnabled: true,
     peekPenalty: 40,

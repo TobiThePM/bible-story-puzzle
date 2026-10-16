@@ -88,9 +88,9 @@ describe('difficulty ramps regardless of session length', () => {
     expect(grids).toContain(4);
   });
 
-  it('a short Refiners Fire game still reaches 5x5', () => {
+  it('keeps Refiners Fire at 4x4 throughout', () => {
     const grids = [0, 1, 2, 3, 4].map((i) => MODES['refiners-fire'].gridFor(roundProgress(i, 5)));
-    expect(grids).toContain(5);
+    expect(new Set(grids)).toEqual(new Set([4]));
   });
 
   it('never gets easier as a session goes on, at any length', () => {
@@ -189,7 +189,7 @@ describe('v2 playability guarantees', () => {
   });
 
   it('is more generous at every grid size than v1 was', () => {
-    const v1 = { 3: 45, 4: 60, 5: 55 } as Record<number, number>;
+    const v1 = { 3: 45, 4: 60 } as Record<number, number>;
     for (const id of MODE_ORDER) {
       for (const p of [0, 0.5, 1]) {
         const grid = MODES[id].gridFor(p);

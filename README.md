@@ -92,7 +92,7 @@ permanently outrank every 5-round game.
 |---|---|---|---|---|
 | **Still Waters** (Easy) | 3x3 throughout | 90s | 4s | Free |
 | **Rising Tide** (Intermediate) | 3x3 -> 4x4 | 60s / 100s | 3s | -25 |
-| **Refiner's Fire** (Hard) | 4x4 -> 5x5 | 90s / 150s | 2s | -40 |
+| **Refiner's Fire** (Hard) | 4x4 throughout | 75s | 2s | -40 |
 
 v2 replaced four age-labelled modes with three named by intensity. Adults were
 the first testers; the age labels read as childish and only the two easiest

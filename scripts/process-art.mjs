@@ -36,7 +36,7 @@ const THUMB = 240;
  *
  * Filenames 01-20 are pool one, 21-40 pool two, 41-60 pool three.
  */
-const GRIDS_FOR_POOL = { one: [3], two: [3, 4], three: [4, 5] };
+const GRIDS_FOR_POOL = { one: [3], two: [3, 4], three: [4] };
 
 function poolForFile(name) {
   const n = parseInt(name.slice(0, 2), 10);

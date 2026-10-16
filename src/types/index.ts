@@ -1,4 +1,4 @@
-export type GridSize = 3 | 4 | 5;
+export type GridSize = 3 | 4;
 
 export interface Story {
   /** Stable slug. Never reused, never renamed once shipped. */
