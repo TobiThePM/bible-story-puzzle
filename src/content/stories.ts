@@ -450,7 +450,7 @@ export const STORIES: Story[] = [
     image: '/stories/29-rahab-cord.webp',
     thumb: '/stories/29-rahab-cord-thumb.webp',
     alt: 'A bright scarlet cord hanging from a window high in a city wall at dusk.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'ruth-barley',
@@ -465,7 +465,7 @@ export const STORIES: Story[] = [
     image: '/stories/30-ruth-barley.webp',
     thumb: '/stories/30-ruth-barley-thumb.webp',
     alt: 'A young woman gathering barley in a golden field with harvesters working behind.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'samuel-voice',
@@ -480,7 +480,7 @@ export const STORIES: Story[] = [
     image: '/stories/31-samuel-voice.webp',
     thumb: '/stories/31-samuel-voice-thumb.webp',
     alt: 'A boy sitting up on his mat in a lamplit temple at night, listening.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'elijah-ravens',
@@ -495,7 +495,7 @@ export const STORIES: Story[] = [
     image: '/stories/32-elijah-ravens.webp',
     thumb: '/stories/32-elijah-ravens-thumb.webp',
     alt: 'Black ravens bringing food to a bearded man beside a rocky brook.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'naaman-jordan',
@@ -510,7 +510,7 @@ export const STORIES: Story[] = [
     image: '/stories/33-naaman-jordan.webp',
     thumb: '/stories/33-naaman-jordan-thumb.webp',
     alt: 'A commander standing waist-deep in a muddy river with his armour on the bank.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'angel-visits-mary',
