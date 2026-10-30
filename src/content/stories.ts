@@ -435,7 +435,7 @@ export const STORIES: Story[] = [
     image: '/stories/28-grapes-of-eshcol.webp',
     thumb: '/stories/28-grapes-of-eshcol-thumb.webp',
     alt: 'Two men carrying an enormous cluster of grapes slung from a pole between them.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'rahab-cord',
@@ -525,7 +525,7 @@ export const STORIES: Story[] = [
     image: '/stories/34-angel-visits-mary.webp',
     thumb: '/stories/34-angel-visits-mary-thumb.webp',
     alt: 'A shining angel standing before a kneeling young woman in a simple stone room.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'shepherds-angels',
@@ -540,7 +540,7 @@ export const STORIES: Story[] = [
     image: '/stories/35-shepherds-angels.webp',
     thumb: '/stories/35-shepherds-angels-thumb.webp',
     alt: 'Shepherds on a dark hillside looking up at a sky filled with shining angels.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'calms-the-storm',
@@ -555,7 +555,7 @@ export const STORIES: Story[] = [
     image: '/stories/36-calms-the-storm.webp',
     thumb: '/stories/36-calms-the-storm-thumb.webp',
     alt: 'A small boat on wild waves, one figure standing with a hand raised to the storm.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'feeding-five-thousand',
@@ -570,7 +570,7 @@ export const STORIES: Story[] = [
     image: '/stories/37-feeding-five-thousand.webp',
     thumb: '/stories/37-feeding-five-thousand-thumb.webp',
     alt: 'A great crowd seated on a hillside with baskets of bread and fish being passed around.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'walking-on-water',
@@ -585,7 +585,7 @@ export const STORIES: Story[] = [
     image: '/stories/38-walking-on-water.webp',
     thumb: '/stories/38-walking-on-water-thumb.webp',
     alt: 'A figure walking on dark water reaching out to another sinking beside a boat.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'last-supper',
@@ -600,7 +600,7 @@ export const STORIES: Story[] = [
     image: '/stories/39-last-supper.webp',
     thumb: '/stories/39-last-supper-thumb.webp',
     alt: 'Friends gathered around a long lamplit table with bread and a cup at its centre.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'empty-tomb',
@@ -615,7 +615,7 @@ export const STORIES: Story[] = [
     image: '/stories/40-empty-tomb.webp',
     thumb: '/stories/40-empty-tomb-thumb.webp',
     alt: 'An open tomb at sunrise with the stone rolled aside and light pouring out.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'dove-olive-leaf',
