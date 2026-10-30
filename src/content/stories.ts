@@ -630,7 +630,7 @@ export const STORIES: Story[] = [
     image: '/stories/41-dove-olive-leaf.webp',
     thumb: '/stories/41-dove-olive-leaf-thumb.webp',
     alt: 'A white dove carrying a green olive leaf toward a hand reaching from the ark window.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'three-visitors',
@@ -645,7 +645,7 @@ export const STORIES: Story[] = [
     image: '/stories/42-three-visitors.webp',
     thumb: '/stories/42-three-visitors-thumb.webp',
     alt: 'Three robed visitors seated under a great oak beside a desert tent.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'jacob-wrestles',
@@ -660,7 +660,7 @@ export const STORIES: Story[] = [
     image: '/stories/43-jacob-wrestles.webp',
     thumb: '/stories/43-jacob-wrestles-thumb.webp',
     alt: 'Two figures locked together at a river ford as dawn breaks behind them.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'joseph-forgives',
@@ -675,7 +675,7 @@ export const STORIES: Story[] = [
     image: '/stories/44-joseph-forgives.webp',
     thumb: '/stories/44-joseph-forgives-thumb.webp',
     alt: 'An Egyptian ruler embracing a travel-worn brother in a great hall.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'bronze-serpent',
@@ -690,7 +690,7 @@ export const STORIES: Story[] = [
     image: '/stories/45-bronze-serpent.webp',
     thumb: '/stories/45-bronze-serpent-thumb.webp',
     alt: 'A bronze serpent raised on a tall pole above a desert camp, people looking up.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'balaams-donkey',
@@ -705,7 +705,7 @@ export const STORIES: Story[] = [
     image: '/stories/46-balaams-donkey.webp',
     thumb: '/stories/46-balaams-donkey-thumb.webp',
     alt: 'A donkey halted in a narrow walled lane before an angel with a drawn sword.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'sun-stands-still',
@@ -720,7 +720,7 @@ export const STORIES: Story[] = [
     image: '/stories/47-sun-stands-still.webp',
     thumb: '/stories/47-sun-stands-still-thumb.webp',
     alt: 'A blazing sun fixed high over a wide valley with a leader’s arms raised.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'deborah-palm',
@@ -735,7 +735,7 @@ export const STORIES: Story[] = [
     image: '/stories/48-deborah-palm.webp',
     thumb: '/stories/48-deborah-palm-thumb.webp',
     alt: 'A seated woman giving judgement beneath a tall palm as people wait to speak.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'hannahs-prayer',
