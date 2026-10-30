@@ -750,7 +750,7 @@ export const STORIES: Story[] = [
     image: '/stories/49-hannahs-prayer.webp',
     thumb: '/stories/49-hannahs-prayer-thumb.webp',
     alt: 'A woman praying silently with tears at a temple doorpost, a priest watching.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'david-anointed',
@@ -765,7 +765,7 @@ export const STORIES: Story[] = [
     image: '/stories/50-david-anointed.webp',
     thumb: '/stories/50-david-anointed-thumb.webp',
     alt: 'An old prophet pouring oil on a shepherd boy’s head before his older brothers.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'solomons-wisdom',
@@ -780,7 +780,7 @@ export const STORIES: Story[] = [
     image: '/stories/51-solomons-wisdom.webp',
     thumb: '/stories/51-solomons-wisdom-thumb.webp',
     alt: 'A king on his throne judging between two women, one reaching out in alarm.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'isaiah-vision',
@@ -795,7 +795,7 @@ export const STORIES: Story[] = [
     image: '/stories/52-isaiah-vision.webp',
     thumb: '/stories/52-isaiah-vision-thumb.webp',
     alt: 'A vast throne wreathed in smoke and winged angels above a kneeling prophet.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'dry-bones',
@@ -810,7 +810,7 @@ export const STORIES: Story[] = [
     image: '/stories/53-dry-bones.webp',
     thumb: '/stories/53-dry-bones-thumb.webp',
     alt: 'A wide valley of pale bones with figures rising and a wind sweeping through.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'baptism-of-jesus',
@@ -825,7 +825,7 @@ export const STORIES: Story[] = [
     image: '/stories/54-baptism-of-jesus.webp',
     thumb: '/stories/54-baptism-of-jesus-thumb.webp',
     alt: 'Two figures standing in a river as light opens above and a dove descends.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'sermon-on-the-mount',
@@ -840,7 +840,7 @@ export const STORIES: Story[] = [
     image: '/stories/55-sermon-on-the-mount.webp',
     thumb: '/stories/55-sermon-on-the-mount-thumb.webp',
     alt: 'A teacher seated on a green hillside with a great crowd listening around him.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'good-samaritan',
@@ -855,7 +855,7 @@ export const STORIES: Story[] = [
     image: '/stories/56-good-samaritan.webp',
     thumb: '/stories/56-good-samaritan-thumb.webp',
     alt: 'A traveller kneeling to help a wounded man beside a stony road, donkey waiting.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'lazarus-come-forth',
@@ -870,7 +870,7 @@ export const STORIES: Story[] = [
     image: '/stories/57-lazarus-come-forth.webp',
     thumb: '/stories/57-lazarus-come-forth-thumb.webp',
     alt: 'A figure calling into an open tomb as a wrapped man steps into the light.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'triumphal-entry',
@@ -885,7 +885,7 @@ export const STORIES: Story[] = [
     image: '/stories/58-triumphal-entry.webp',
     thumb: '/stories/58-triumphal-entry-thumb.webp',
     alt: 'A figure riding a donkey through crowds waving palm branches at a city gate.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'the-cross',
@@ -900,7 +900,7 @@ export const STORIES: Story[] = [
     image: '/stories/59-the-cross.webp',
     thumb: '/stories/59-the-cross-thumb.webp',
     alt: 'Three crosses silhouetted on a dark hill with a shaft of light breaking through.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'road-to-emmaus',
@@ -915,7 +915,7 @@ export const STORIES: Story[] = [
     image: '/stories/60-road-to-emmaus.webp',
     thumb: '/stories/60-road-to-emmaus-thumb.webp',
     alt: 'Three travellers walking a country road at golden sunset deep in conversation.',
-    ready: false,
+    ready: true,
   },
 ];
 

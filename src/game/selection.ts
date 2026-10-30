@@ -38,25 +38,6 @@ export function pendingInPool(pool: StoryPool): Story[] {
   return STORIES.filter((s) => s.pool === pool && !s.ready).sort((a, b) => a.order - b.order);
 }
 
-/**
- * TRANSITIONAL - remove once pools two and three are filled.
- *
- * Pools two and three are waiting on their forty illustrations. Until those
- * exist, those levels fall back to pool one so they stay playable with the new
- * v2 timings rather than dealing an empty board. Without this, choosing
- * Rising Tide crashed with "Cannot read properties of undefined".
- *
- * `poolsReady()` reports when the fallback is no longer doing anything, and a
- * test asserts the fallback disappears on its own once the art lands.
- */
-export function effectivePool(pool: StoryPool): StoryPool {
-  return storiesInPool(pool).length > 0 ? pool : 'one';
-}
-
-export function poolsReady(): boolean {
-  return (['one', 'two', 'three'] as StoryPool[]).every((p) => storiesInPool(p).length > 0);
-}
-
 export function pickStories(pool: StoryPool, length: number, seed: string): Story[] {
   const all = storiesInPool(pool);
 

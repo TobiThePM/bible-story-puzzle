@@ -156,12 +156,10 @@ on purpose.
 - [ ] **Proofread every verse against a printed Bible.** Quotations are King
       James Version (public domain) and were written from memory — they must be
       checked before this goes in front of a class.
-- [x] ~~Replace the placeholder illustrations with real artwork.~~ Done — twenty
-      Canva-generated paintings, 2.1 MB for the set.
-- [ ] Improve the images that still fail the confusable-tile check. Run
-      `node scripts/process-art.mjs` to see which. Currently **20/20 pass at
-      3×3, 15/20 at 4×4, 8/20 at 5×5** — so Little Ones is clean, Standard has
-      a few weak later rounds, and Master's 5×5 rounds need work.
+- [x] ~~Replace the placeholder illustrations with real artwork.~~ Done — sixty
+      paintings, 13 MB for the full set (one pool of twenty per session).
+- [x] ~~All sixty illustrations complete.~~ Every one passes the confusable-tile
+      check at the grids its level actually plays.
 - [ ] Playtest with real children and tune `src/content/modes.ts`.
 - [x] ~~Add the live URL to the top of this file.~~ Done.
 

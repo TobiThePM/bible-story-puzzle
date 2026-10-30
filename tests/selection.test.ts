@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { pickStories, storiesInPool, effectivePool, poolsReady } from '@/game/selection';
+import { pickStories, storiesInPool } from '@/game/selection';
 import { STORIES } from '@/content/stories';
 import { LENGTHS, MODES, MODE_ORDER } from '@/content/modes';
 import { roundProgress } from '@/types';
@@ -218,27 +218,6 @@ describe('story pools', () => {
   });
 });
 
-describe('transitional pool fallback', () => {
-  // Pools two and three are waiting on their forty illustrations. Until then
-  // those levels borrow pool one rather than dealing an empty board.
-  it('never returns an empty set for any level', () => {
-    for (const id of MODE_ORDER) {
-      for (const { rounds } of LENGTHS) {
-        const picked = pickStories(effectivePool(MODES[id].pool), rounds, `fallback-${id}`);
-        expect(picked.length, `${id} @ ${rounds}`).toBeGreaterThan(0);
-      }
-    }
-  });
-
-  it('stops falling back on its own once every pool has stories', () => {
-    for (const p of ['one', 'two', 'three'] as const) {
-      const expected = storiesInPool(p).length > 0 ? p : 'one';
-      expect(effectivePool(p)).toBe(expected);
-    }
-    // When this flips true, delete effectivePool and this block.
-    expect(typeof poolsReady()).toBe('boolean');
-  });
-});
 
 describe('the ready gate', () => {
   // Story text is written long before its illustration exists. `ready` is what
@@ -255,7 +234,7 @@ describe('the ready gate', () => {
   it('never deals an unready story into a session', () => {
     for (const id of MODE_ORDER) {
       for (const { rounds } of LENGTHS) {
-        const picked = pickStories(effectivePool(MODES[id].pool), rounds, `ready-${id}`);
+        const picked = pickStories(MODES[id].pool, rounds, `ready-${id}`);
         for (const story of picked) expect(story.ready, story.id).toBe(true);
       }
     }

@@ -13,7 +13,7 @@ import type {
 import { roundProgress } from '@/types';
 import { MODES, DEFAULT_MODE, DEFAULT_LENGTH } from '@/content/modes';
 import { boardSeed, correctCount, isSolved, shuffle, swap } from './logic';
-import { pickStories, effectivePool } from './selection';
+import { pickStories } from './selection';
 import { scoreRound, totalScore, goldStarCount } from './scoring';
 import { makeSessionSeed } from './rng';
 import { recordRun, setLastMode, setLastLength } from './storage';
@@ -98,7 +98,7 @@ export const useGame = create<GameState>((set, get) => ({
   startGame: (modeId, length, profileId) => {
     const mode = MODES[modeId] ?? MODES[DEFAULT_MODE];
     const sessionSeed = makeSessionSeed();
-    const stories = pickStories(effectivePool(mode.pool), length ?? DEFAULT_LENGTH, sessionSeed);
+    const stories = pickStories(mode.pool, length ?? DEFAULT_LENGTH, sessionSeed);
 
     setLastMode(mode.id);
     setLastLength(stories.length);
