@@ -360,7 +360,7 @@ export const STORIES: Story[] = [
     image: '/stories/23-abraham-isaac.webp',
     thumb: '/stories/23-abraham-isaac-thumb.webp',
     alt: 'An old man and his son on a rocky summit, a ram caught in a thicket nearby.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'jacobs-ladder',
