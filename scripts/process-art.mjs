@@ -25,8 +25,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SOURCE_DIR = path.resolve(__dirname, '../assets-source');
 const OUT_DIR = path.resolve(__dirname, '../public/stories');
 
-const FULL = 1200;
+const FULL = 1024;
 const THUMB = 240;
+// 1024 matches what Figma generates natively and is still ~1.6x the largest
+// on-screen board (640 CSS px), so upscaling past it only grew the files.
 
 /**
  * Which grids each pool is actually played at. Judging every picture at 5x5
@@ -102,7 +104,7 @@ async function processOne(file) {
   const meta = await sharp(src).metadata();
   const cropped = meta.width !== meta.height;
 
-  const full = await sharp(src).resize(FULL, FULL, { fit: 'cover' }).webp({ quality: 82 }).toBuffer();
+  const full = await sharp(src).resize(FULL, FULL, { fit: 'cover' }).webp({ quality: 80 }).toBuffer();
   fs.writeFileSync(path.join(OUT_DIR, `${name}.webp`), full);
 
   const thumb = await sharp(src).resize(THUMB, THUMB, { fit: 'cover' }).webp({ quality: 78 }).toBuffer();

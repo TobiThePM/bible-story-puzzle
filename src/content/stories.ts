@@ -375,7 +375,7 @@ export const STORIES: Story[] = [
     image: '/stories/24-jacobs-ladder.webp',
     thumb: '/stories/24-jacobs-ladder-thumb.webp',
     alt: 'A glowing stairway rising into a starry sky with angels ascending and descending.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'joseph-egypt',
@@ -390,7 +390,7 @@ export const STORIES: Story[] = [
     image: '/stories/25-joseph-egypt.webp',
     thumb: '/stories/25-joseph-egypt-thumb.webp',
     alt: 'A young ruler in Egyptian robes before granaries heaped with golden grain.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'baby-moses',
@@ -405,7 +405,7 @@ export const STORIES: Story[] = [
     image: '/stories/26-baby-moses.webp',
     thumb: '/stories/26-baby-moses-thumb.webp',
     alt: 'A woven basket among tall river reeds with a royal woman reaching down to it.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'manna',
@@ -420,7 +420,7 @@ export const STORIES: Story[] = [
     image: '/stories/27-manna.webp',
     thumb: '/stories/27-manna-thumb.webp',
     alt: 'Desert ground covered in white flakes at dawn with people gathering them into jars.',
-    ready: false,
+    ready: true,
   },
   {
     id: 'grapes-of-eshcol',
